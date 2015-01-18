@@ -3,7 +3,9 @@ class ReadMark < ActiveRecord::Base
   attr_accessible :readable_id, :user_id, :readable_type, :timestamp
 
   validates_presence_of :user_id, :readable_type
-
+  sync :all
+  sync_scope :by_user, ->(user) { where(user_id: user.id)}
+  
   scope :global, lambda { where(:readable_id => nil) }
   scope :single, lambda { where('readable_id IS NOT NULL') }
   scope :older_than, lambda { |timestamp| where([ 'timestamp < ?', timestamp ]) }
